@@ -86,7 +86,7 @@ flowchart TB
 
   subgraph Compose["docker compose project: gfire-console"]
     subgraph Published["Published host ports"]
-      PUI["GFIREUI_HOST_PORT\n→ ui:80/8088"]
+      PUI["GFIREUI_HOST_PORT\n→ ui:8080"]
       PBFF["GFIREUI_BACKEND_HOST_PORT\n→ backend:8090"]
       PG1["GFIRE_HOST_PORT\n→ gfire-1:8080"]
       PPG["GFIRE_POSTGRES_HOST_PORT\n→ postgres:5432 lab"]

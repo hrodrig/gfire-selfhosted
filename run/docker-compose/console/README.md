@@ -12,7 +12,7 @@ Design: [console-stack design](../../../docs/superpowers/specs/2026-08-07-gfire-
 - Images (GHCR or local overrides via `*_IMAGE`):
   - `ghcr.io/hrodrig/gfire:${GFIRE_VERSION}`
   - `ghcr.io/hrodrig/gfireui-backend:${GFIREUI_BACKEND_VERSION}`
-  - `ghcr.io/hrodrig/gfireui:${GFIREUI_VERSION}` (static SPA; listen port **80** in compose — adjust if your image differs)
+  - `ghcr.io/hrodrig/gfireui:${GFIREUI_VERSION}` (static SPA; container listen **8080**; host via `GFIREUI_HOST_PORT`)
 - Engine Postgres migrations applied (same tag as `GFIRE_VERSION`; not auto on `gfire server`)
 
 ## Bring up

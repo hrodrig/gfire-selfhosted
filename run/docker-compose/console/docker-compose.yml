@@ -148,7 +148,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "${GFIREUI_HOST_PORT:-8088}:80"
+      - "${GFIREUI_HOST_PORT:-8088}:8080"
     environment:
       PUBLIC_GFIREUI_API_BASE: ${PUBLIC_GFIREUI_API_BASE:-http://127.0.0.1:8090}
     logging: *default-logging

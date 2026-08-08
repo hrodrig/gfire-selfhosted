@@ -408,8 +408,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "${GFIREUI_HOST_PORT:-8088}:80"
-    # If the SPA image listens on another port, adjust target and document in README.
+      - "${GFIREUI_HOST_PORT:-8088}:8080"
     environment:
       # Browser-facing API base is usually baked at image build; document PUBLIC_GFIREUI_API_BASE
       # must match published BFF URL when building the image.
@@ -418,7 +417,7 @@ services:
 
 Add redis/valkey profile services mirroring minimal (paths under `GFIRE_STACK_HOST_DATA`, ports `GFIRE_REDIS_HOST_PORT` / `GFIRE_VALKEY_HOST_PORT`).
 
-**Note on SPA port:** if the forthcoming `gfireui` image uses nginx on 8080 instead of 80, fix the target port in the same task once the image Dockerfile exists — README must state the published mapping.
+**SPA container listen port:** **8080** (host via `GFIREUI_HOST_PORT`, default 8088 to avoid clash with engine `GFIRE_HOST_PORT`).
 
 - [ ] **Step 2: Write `run/docker-compose/console/README.md`**
 
