@@ -1,19 +1,52 @@
+<a id="readme-top"></a>
+
 # gfire-selfhosted
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](./VERSION)
+[![Release](https://img.shields.io/github/v/release/hrodrig/gfire-selfhosted?label=release)](https://github.com/hrodrig/gfire-selfhosted/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![App image on GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfire-2496ED?logo=github)](https://github.com/hrodrig/gfire/pkgs/container/gfire)
 [![gfire app](https://img.shields.io/badge/app-hrodrig%2Fgfire-181717?logo=github)](https://github.com/hrodrig/gfire)
+[![gghstats clones](https://gghstats.hermesrodriguez.com/api/v1/badge/hrodrig/gfire-selfhosted?metric=clones)](https://gghstats.hermesrodriguez.com/hrodrig/gfire-selfhosted)
 
-Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compose, `docker run`, standalone runbooks, and **Helm**. **This repository owns deployment and infra** (charts, Compose, runbooks). App source lives in **[gfire](https://github.com/hrodrig/gfire)** / **[gfireui](https://github.com/hrodrig/gfireui)** / **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)**.
+**Repo:** [github.com/hrodrig/gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted) · **Releases:** [GitHub Releases](https://github.com/hrodrig/gfire-selfhosted/releases) · **Apps:** [gfire](https://github.com/hrodrig/gfire) · [gfireui](https://github.com/hrodrig/gfireui) · [gfireui-backend](https://github.com/hrodrig/gfireui-backend) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md) · **Roadmap:** [ROADMAP.md](./ROADMAP.md) · **Disclaimer:** [DISCLAIMER.md](./DISCLAIMER.md)
 
-**Console companions** (separate repos): [gfireui](https://github.com/hrodrig/gfireui) · [gfireui-backend](https://github.com/hrodrig/gfireui-backend)
+![gfire-selfhosted — Compose, Helm, run/](assets/gfire-selfhosted-hero.png)
 
-**Releases:** Root **`VERSION`** and Git tags **`v<semver>`** on **`main`** name repository snapshots. Work in progress lands on **`develop`** first.
+Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compose, `docker run`, standalone runbooks, and **Helm**. **This repository owns deployment and infra** (charts, Compose, runbooks). Application source, binaries, and GHCR images live in the product repos:
 
-**Design:** [docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md) · [Console stack](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-console-stack-design.md) · **Roadmap:** [ROADMAP.md](./ROADMAP.md)
+| Product | Repo | Role |
+|---------|------|------|
+| Engine | [gfire](https://github.com/hrodrig/gfire) | Headless job service |
+| Ops console SPA | [gfireui](https://github.com/hrodrig/gfireui) | Browser UI |
+| Ops console BFF | [gfireui-backend](https://github.com/hrodrig/gfireui-backend) | Auth, RBAC, proxy |
+
+**Releases:** Root **`VERSION`** and Git tags **`v<semver>`** on **`main`** name repository snapshots. Work in progress lands on **`develop`** first — prefer **`main`** or a **tag** for reproducible paths.
+
+**Design:** [selfhosted design](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md) · [Console stack](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-console-stack-design.md)
 
 > **USE AT YOUR OWN RISK.** This is not a managed service. **You** are responsible for your data, secrets, backups, and how you run these stacks. The maintainers are **not** liable for data loss, misuse, or unsuitable deployments. Full text: **[DISCLAIMER.md](./DISCLAIMER.md)**.
+
+**Related tools (same maintainer):**
+- **[pgwd](https://github.com/hrodrig/pgwd)** — PostgreSQL connection watchdog ([live traffic](https://gghstats.hermesrodriguez.com/hrodrig/pgwd); deploy: [pgwd-selfhosted](https://github.com/hrodrig/pgwd-selfhosted))
+- **[gghstats](https://github.com/hrodrig/gghstats)** — GitHub repo traffic beyond 14 days ([live demo](https://gghstats.hermesrodriguez.com); deploy: [gghstats-selfhosted](https://github.com/hrodrig/gghstats-selfhosted))
+- **[kzero](https://github.com/hrodrig/kzero)** — bastion-first declarative workload reset ([live traffic](https://gghstats.hermesrodriguez.com/hrodrig/kzero); deploy: [kzero-selfhosted](https://github.com/hrodrig/kzero-selfhosted))
+- **[groot](https://github.com/hrodrig/groot)** — Kubernetes diagnostics archive ([live traffic](https://gghstats.hermesrodriguez.com/hrodrig/groot); deploy: [groot-selfhosted](https://github.com/hrodrig/groot-selfhosted))
+
+---
+
+## Table of contents
+
+- [Pick a path](#pick-a-path)
+- [Standalone (native)](#standalone-native)
+- [Docker single container](#docker-single-container)
+- [Docker Compose minimal](#docker-compose-minimal)
+- [Docker Compose console](#docker-compose-console)
+- [Kubernetes Helm](#kubernetes-helm)
+- [Repository layout](#repository-layout)
+- [Versioning](#versioning)
+- [Community and policies](#community-and-policies)
+- [License](#license)
 
 ---
 
@@ -44,11 +77,13 @@ Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compo
 | **`valkey/`** | `--profile valkey` |
 | **`gfire.yaml`** | Optional (if you mount app config later) |
 
-Default engine image tag in examples: **`v1.0.0`**. Set **`GFIRE_VERSION`** (and console `GFIREUI_*_VERSION`) in **`${GFIRE_STACK_HOST_DATA}/.env`**.
+Default engine image tag in examples: **`v1.0.2`**. Set **`GFIRE_VERSION`** (and console `GFIREUI_*_VERSION`) in **`${GFIRE_STACK_HOST_DATA}/.env`**.
 
 **Your own VPS:** harden the host before exposing GFire. Review family guidance at **[gghstats-selfhosted `run/vps-recommended`](https://github.com/hrodrig/gghstats-selfhosted/tree/main/run/vps-recommended)**. See also [DISCLAIMER.md](./DISCLAIMER.md).
 
 **Packaging note:** gfire Releases today publish **archives + GHCR**. Homebrew / `.deb` / `.rpm` slots are documented; fill when upstream ships them.
+
+**[↑ Contents](#table-of-contents)**
 
 ---
 
@@ -56,11 +91,15 @@ Default engine image tag in examples: **`v1.0.0`**. Set **`GFIRE_VERSION`** (and
 
 See **[`run/standalone/README.md`](run/standalone/README.md)** — packaged installs first; tarball / [install script](https://get.gfire.hermesrodriguez.com/install.sh); compile only if nothing else fits.
 
+**[↑ Contents](#table-of-contents)**
+
 ---
 
 ## Docker single container
 
 See **[`run/docker/README.md`](run/docker/README.md)**. Distroless image: pass **`server`** as the command (default CMD is `version`).
+
+**[↑ Contents](#table-of-contents)**
 
 ---
 
@@ -81,6 +120,8 @@ Then apply **PostgreSQL migrations** from the gfire repo (same tag as **`GFIRE_V
 curl -sS http://127.0.0.1:8080/healthz
 ```
 
+**[↑ Contents](#table-of-contents)**
+
 ---
 
 ## Docker Compose console
@@ -96,6 +137,8 @@ cp run/docker-compose/console/.env.example "${GFIRE_STACK_HOST_DATA}/.env"
 ```
 
 Requires published (or locally overridden) **gfireui** / **gfireui-backend** images.
+
+**[↑ Contents](#table-of-contents)**
 
 ---
 
@@ -116,6 +159,8 @@ Edge routing: Host-based Ingress (or PathPrefix + rewrite). Apps keep root paths
 
 Console Helm overlay: later (`GSH-032`).
 
+**[↑ Contents](#table-of-contents)**
+
 ---
 
 ## Repository layout
@@ -131,8 +176,11 @@ run/
   kubernetes/helm/gfire/             # engine chart
   kubernetes/manifests/               # prefer helm template
 docs/superpowers/specs/
+assets/gfire-selfhosted-hero.png
 # NOT in git: ${GFIRE_STACK_HOST_DATA}/.env, postgres*/, secrets
 ```
+
+**[↑ Contents](#table-of-contents)**
 
 ---
 
@@ -145,9 +193,13 @@ docs/superpowers/specs/
 | **`GFIREUI_*_VERSION`** | Console image pins |
 | Helm **`Chart.yaml` `version:`** | Chart package (`0.1.0` today) |
 
+**[↑ Contents](#table-of-contents)**
+
 ---
 
 ## Community and policies
+
+**Policies:** [Community and policies](#community-and-policies), [community standards](#community-standards) — changelog, contributing, security, code of conduct, agent guidelines.
 
 - [DISCLAIMER](./DISCLAIMER.md) — use at your own risk; your data, your responsibility
 - [ROADMAP](./ROADMAP.md)
@@ -157,6 +209,16 @@ docs/superpowers/specs/
 - [CODE_OF_CONDUCT](./CODE_OF_CONDUCT.md)
 - [AGENTS](./AGENTS.md)
 
+### Community standards
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+**[↑ Contents](#table-of-contents)** · **[↑ Top](#readme-top)**
+
+---
+
 ## License
 
 [MIT](./LICENSE) — see also [DISCLAIMER.md](./DISCLAIMER.md).
+
+**[↑ Contents](#table-of-contents)** · **[↑ Top](#readme-top)**

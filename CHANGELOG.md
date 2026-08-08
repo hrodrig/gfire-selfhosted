@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Console `.env.example` with `GFIRE_STACK_*` / `GFIRE_*` / `GFIREUI_*` / `GFIREUI_BACKEND_*` prefixes and bootstrap admin (`GSH-031`).
 - **Helm chart** `run/kubernetes/helm/gfire/` (`GSH-020`–`024`): engine Deployment/Service, Postgres DSN Secret, optional auth Secret, peer `server_id` from pod name; `helm-lint` + `release-charts` workflows; `make release-check` includes helm lint/template/kubeconform.
 - Design §8: k8s Host/Ingress routing without app `BASE_PATH`.
+- README hero (`assets/gfire-selfhosted-hero.png`), family nav line, Related tools, TOC + **↑ Contents** links (gghstats/kzero-selfhosted pattern).
 
 ### Changed
 
@@ -20,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Minimal env: **`GFIRE_POSTGRES_*`**, **`GFIRE_REDIS_HOST_PORT`**, **`GFIRE_VALKEY_HOST_PORT`**; Postgres image **`postgres:18.4-bookworm`** (mount `/var/lib/postgresql`).
 - `make release-check` validates Helm + minimal + console `compose config`.
 - **Pick a path / standalone:** preferred native order documented; ROADMAP/`GSH-*` bands; DISCLAIMER; VPS pointer to gghstats `vps-recommended`.
+- Default example engine pin documented as **`v1.0.2`**.
 
 ## [0.1.0] - 2026-08-07
 
