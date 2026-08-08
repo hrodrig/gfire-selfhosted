@@ -1,0 +1,186 @@
+# Console stack: 3 gfire peers + gfireui-backend + SPA + dual Postgres 18.4 Bookworm.
+# Operator .env: ${GFIRE_STACK_HOST_DATA}/.env (from console/.env.example).
+# Extract BFF migrations first: ./run/scripts/extract-gfireui-migrations.sh
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-gfire-env: &gfire-env
+  GFIRE_SERVER_HOST: "0.0.0.0"
+  GFIRE_SERVER_PORT: "8080"
+  GFIRE_STORAGE_BACKEND: ${GFIRE_STORAGE_BACKEND:-postgres}
+  GFIRE_STORAGE_POSTGRES_DSN: ${GFIRE_STORAGE_POSTGRES_DSN:?set GFIRE_STORAGE_POSTGRES_DSN}
+  GFIRE_AUTH_ENABLED: ${GFIRE_AUTH_ENABLED:-false}
+  GFIRE_AUTH_TOKEN: ${GFIRE_AUTH_TOKEN:-}
+  GFIRE_SERVER_WORKERS: ${GFIRE_SERVER_WORKERS:-4}
+  GFIRE_STORAGE_REDIS_ADDR: ${GFIRE_STORAGE_REDIS_ADDR:-}
+  GFIRE_STORAGE_REDIS_PASSWORD: ${GFIRE_STORAGE_REDIS_PASSWORD:-}
+  GFIRE_STORAGE_REDIS_DB: ${GFIRE_STORAGE_REDIS_DB:-0}
+
+services:
+  postgres:
+    image: postgres:18.4-bookworm
+    container_name: gfire-console-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${GFIRE_POSTGRES_DB:-gfire}
+      POSTGRES_USER: ${GFIRE_POSTGRES_USER:-gfire}
+      POSTGRES_PASSWORD: ${GFIRE_POSTGRES_PASSWORD:?set GFIRE_POSTGRES_PASSWORD}
+    ports:
+      - "${GFIRE_POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${GFIRE_POSTGRES_USER:-gfire} -d ${GFIRE_POSTGRES_DB:-gfire}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    logging: *default-logging
+
+  gfire-1:
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    container_name: gfire-1
+    restart: unless-stopped
+    command: ["server"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${GFIRE_HOST_PORT:-8080}:8080"
+    environment:
+      <<: *gfire-env
+      GFIRE_SERVER_SERVER_ID: gfire-1
+    logging: *default-logging
+
+  gfire-2:
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    container_name: gfire-2
+    restart: unless-stopped
+    command: ["server"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *gfire-env
+      GFIRE_SERVER_SERVER_ID: gfire-2
+    logging: *default-logging
+
+  gfire-3:
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    container_name: gfire-3
+    restart: unless-stopped
+    command: ["server"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *gfire-env
+      GFIRE_SERVER_SERVER_ID: gfire-3
+    logging: *default-logging
+
+  postgres-ui:
+    image: postgres:18.4-bookworm
+    container_name: gfire-console-postgres-ui
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${GFIREUI_POSTGRES_DB:-gfireui}
+      POSTGRES_USER: ${GFIREUI_POSTGRES_USERNAME:-gfireui}
+      POSTGRES_PASSWORD: ${GFIREUI_POSTGRES_PASSWORD:?set GFIREUI_POSTGRES_PASSWORD}
+    ports:
+      - "${GFIREUI_POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/postgres-ui:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${GFIREUI_POSTGRES_USERNAME:-gfireui} -d ${GFIREUI_POSTGRES_DB:-gfireui}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    logging: *default-logging
+
+  migrate:
+    image: migrate/migrate:v4.18.1
+    container_name: gfire-console-migrate
+    depends_on:
+      postgres-ui:
+        condition: service_healthy
+    volumes:
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/migrations-ui:/migrations:ro
+    command:
+      [
+        "-path=/migrations",
+        "-database=postgres://${GFIREUI_POSTGRES_USERNAME:-gfireui}:${GFIREUI_POSTGRES_PASSWORD}@postgres-ui:5432/${GFIREUI_POSTGRES_DB:-gfireui}?sslmode=disable",
+        "up",
+      ]
+    logging: *default-logging
+
+  backend:
+    image: ${GFIREUI_BACKEND_IMAGE:-ghcr.io/hrodrig/gfireui-backend:${GFIREUI_BACKEND_VERSION:-v0.1.0}}
+    container_name: gfireui-backend
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      gfire-1:
+        condition: service_started
+    ports:
+      - "${GFIREUI_BACKEND_HOST_PORT:-8090}:8090"
+    environment:
+      GFIREUI_BACKEND_SERVER_ADDR: ":8090"
+      GFIREUI_BACKEND_SERVER_CORS_ALLOWED_ORIGINS: "http://127.0.0.1:${GFIREUI_HOST_PORT:-8088},http://localhost:${GFIREUI_HOST_PORT:-8088}"
+      GFIREUI_BACKEND_DATABASE_DSN: "postgres://${GFIREUI_POSTGRES_USERNAME:-gfireui}:${GFIREUI_POSTGRES_PASSWORD}@postgres-ui:5432/${GFIREUI_POSTGRES_DB:-gfireui}?sslmode=disable"
+      GFIREUI_BACKEND_AUTH_JWT_SECRET: ${GFIREUI_BACKEND_AUTH_JWT_SECRET:?set GFIREUI_BACKEND_AUTH_JWT_SECRET}
+      GFIREUI_BACKEND_AUTH_TOKEN_TTL: "24h"
+      GFIREUI_BACKEND_GFIRE_BASE_URL: "http://gfire-1:8080"
+      GFIREUI_BACKEND_GFIRE_TOKEN: ${GFIRE_AUTH_TOKEN:-}
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_EMAIL: ${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_PASSWORD: ${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_PASSWORD:-adminadmin}
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_FIRST_NAME: ${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_FIRST_NAME:-Admin}
+      GFIREUI_BACKEND_BOOTSTRAP_ADMIN_LAST_NAME: ${GFIREUI_BACKEND_BOOTSTRAP_ADMIN_LAST_NAME:-User}
+    logging: *default-logging
+
+  ui:
+    image: ${GFIREUI_IMAGE:-ghcr.io/hrodrig/gfireui:${GFIREUI_VERSION:-v0.1.0}}
+    container_name: gfireui
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${GFIREUI_HOST_PORT:-8088}:80"
+    environment:
+      PUBLIC_GFIREUI_API_BASE: ${PUBLIC_GFIREUI_API_BASE:-http://127.0.0.1:8090}
+    logging: *default-logging
+
+  redis:
+    profiles: ["redis"]
+    image: redis:7-alpine
+    container_name: gfire-console-redis
+    restart: unless-stopped
+    ports:
+      - "${GFIRE_REDIS_HOST_PORT:-6379}:6379"
+    volumes:
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    logging: *default-logging
+
+  valkey:
+    profiles: ["valkey"]
+    image: valkey/valkey:8-alpine
+    container_name: gfire-console-valkey
+    restart: unless-stopped
+    ports:
+      - "${GFIRE_VALKEY_HOST_PORT:-6380}:6379"
+    volumes:
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/valkey:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    logging: *default-logging

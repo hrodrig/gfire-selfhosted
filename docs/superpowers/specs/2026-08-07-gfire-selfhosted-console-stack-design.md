@@ -1,7 +1,7 @@
 # GFire Selfhosted — Console Compose Stack Design
 
 **Date:** 2026-08-07  
-**Status:** Draft (awaiting user review)  
+**Status:** Approved  
 **Repo:** [hrodrig/gfire-selfhosted](https://github.com/hrodrig/gfire-selfhosted)  
 **Parent:** [2026-08-07-gfire-selfhosted-design.md](./2026-08-07-gfire-selfhosted-design.md)  
 **Roadmap:** Band 3 (`GSH-030`, `GSH-031`, …)

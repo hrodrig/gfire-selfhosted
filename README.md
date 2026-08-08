@@ -11,7 +11,7 @@ Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compo
 
 **Releases:** Root **`VERSION`** and Git tags **`v<semver>`** on **`main`** name repository snapshots. Work in progress lands on **`develop`** first.
 
-**Design:** [docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md) · **Roadmap:** [ROADMAP.md](./ROADMAP.md)
+**Design:** [docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md) · [Console stack](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-console-stack-design.md) · **Roadmap:** [ROADMAP.md](./ROADMAP.md)
 
 > **USE AT YOUR OWN RISK.** This is not a managed service. **You** are responsible for your data, secrets, backups, and how you run these stacks. The maintainers are **not** liable for data loss, misuse, or unsuitable deployments. Full text: **[DISCLAIMER.md](./DISCLAIMER.md)**.
 
@@ -28,24 +28,27 @@ Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compo
 | **install.sh / release archive** | [Standalone](#standalone-native) |
 | **Single container** (`docker run`) | [Docker single container](#docker-single-container) |
 | **Compose** (engine + Postgres) | [Docker Compose minimal](#docker-compose-minimal) |
+| **Compose console** (3 peers + UI + BFF) | [Docker Compose console](#docker-compose-console) |
 | **Kubernetes** | [Kubernetes Helm](#kubernetes-helm) _(planned)_ |
 | **Build from source** | [Last resort](run/standalone/linux/README.md#from-source-last-resort) |
 
-**Config outside the clone (gghstats-style):** copy **[`run/common/.env.example`](run/common/.env.example)** → **`${GFIRE_HOST_DATA}/.env`**, keep durable data under that same host directory, and always pass that env file (prefer **[`run/scripts/compose-stack.sh`](run/scripts/compose-stack.sh)**). `git pull` on this repo must not flatten secrets or DB files.
+**Config outside the clone (gghstats-style):** copy the stack template → **`${GFIRE_STACK_HOST_DATA}/.env`**, keep durable data under that directory, prefer **[`run/scripts/compose-stack.sh`](run/scripts/compose-stack.sh)**. Deprecated alias: **`GFIRE_HOST_DATA`** (one release). `git pull` must not flatten secrets or DB files.
 
-| Under **`${GFIRE_HOST_DATA}/`** | When |
-|---------------------------------|------|
+| Under **`${GFIRE_STACK_HOST_DATA}/`** | When |
+|--------------------------------------|------|
 | **`.env`** | Always (secrets, pins, ports) |
-| **`postgres/`** | Compose minimal (Postgres bind-mount) |
+| **`postgres/`** | Engine Postgres bind-mount |
+| **`postgres-ui/`** | Console stack (BFF DB) |
+| **`migrations-ui/`** | Console (extract via `extract-gfireui-migrations.sh`) |
 | **`redis/`** | `--profile redis` |
 | **`valkey/`** | `--profile valkey` |
 | **`gfire.yaml`** | Optional (if you mount app config later) |
 
-Default image tag in examples: **`v1.0.0`** ([gfire releases](https://github.com/hrodrig/gfire/releases)). Set **`GFIRE_VERSION`** in **`${GFIRE_HOST_DATA}/.env`**.
+Default engine image tag in examples: **`v1.0.0`**. Set **`GFIRE_VERSION`** (and console `GFIREUI_*_VERSION`) in **`${GFIRE_STACK_HOST_DATA}/.env`**.
 
-**Your own VPS:** harden the host before exposing GFire. Review family guidance at **[gghstats-selfhosted `run/vps-recommended`](https://github.com/hrodrig/gghstats-selfhosted/tree/main/run/vps-recommended)** (SSH, firewall, updates — recommendations only; you validate and apply). See also [DISCLAIMER.md](./DISCLAIMER.md).
+**Your own VPS:** harden the host before exposing GFire. Review family guidance at **[gghstats-selfhosted `run/vps-recommended`](https://github.com/hrodrig/gghstats-selfhosted/tree/main/run/vps-recommended)**. See also [DISCLAIMER.md](./DISCLAIMER.md).
 
-**Packaging note:** gfire Releases today publish **archives + GHCR**. Homebrew / `.deb` / `.rpm` are the preferred native paths once upstream ships them (same hygiene as pgwd/gghstats); this repo documents the slots now.
+**Packaging note:** gfire Releases today publish **archives + GHCR**. Homebrew / `.deb` / `.rpm` slots are documented; fill when upstream ships them.
 
 ---
 
@@ -64,22 +67,35 @@ See **[`run/docker/README.md`](run/docker/README.md)**. Distroless image: pass *
 ## Docker Compose minimal
 
 ```bash
-export GFIRE_HOST_DATA=/home/gfire/gfire-data   # outside the clone
-mkdir -p "$GFIRE_HOST_DATA/postgres"
-# If you will use a profile: also mkdir -p "$GFIRE_HOST_DATA/redis" or .../valkey
-cp run/common/.env.example "${GFIRE_HOST_DATA}/.env"
-# edit secrets + set GFIRE_HOST_DATA to the same absolute path
+export GFIRE_STACK_HOST_DATA=/home/gfire/gfire-data   # outside the clone
+mkdir -p "$GFIRE_STACK_HOST_DATA/postgres"
+cp run/common/.env.example "${GFIRE_STACK_HOST_DATA}/.env"
+# edit secrets + set GFIRE_STACK_HOST_DATA to the same absolute path
 
 ./run/scripts/compose-stack.sh minimal up -d
-# Redis backend example:
-# ./run/scripts/compose-stack.sh minimal --profile redis up -d
 ```
 
-Then apply **PostgreSQL migrations** from the gfire repo (same tag as **`GFIRE_VERSION`**) — the engine does not auto-migrate. Details: [`run/docker-compose/README.md`](run/docker-compose/README.md).
+Then apply **PostgreSQL migrations** from the gfire repo (same tag as **`GFIRE_VERSION`**). Details: [`run/docker-compose/README.md`](run/docker-compose/README.md).
 
 ```bash
 curl -sS http://127.0.0.1:8080/healthz
 ```
+
+---
+
+## Docker Compose console
+
+Happy path for **UI + three gfire peers**: see **[`run/docker-compose/console/README.md`](run/docker-compose/console/README.md)**.
+
+```bash
+export GFIRE_STACK_HOST_DATA=/home/gfire/gfire-stack-data
+mkdir -p "$GFIRE_STACK_HOST_DATA"/{postgres,postgres-ui}
+cp run/docker-compose/console/.env.example "${GFIRE_STACK_HOST_DATA}/.env"
+# edit secrets + pins; extract BFF migrations; apply engine migrations
+./run/scripts/compose-stack.sh console up -d
+```
+
+Requires published (or locally overridden) **gfireui** / **gfireui-backend** images.
 
 ---
 
@@ -93,14 +109,15 @@ curl -sS http://127.0.0.1:8080/healthz
 
 ```text
 run/
-  common/.env.example          # template only → copy to GFIRE_HOST_DATA/.env
-  scripts/compose-stack.sh     # always --env-file $GFIRE_HOST_DATA/.env
-  docker/
+  common/.env.example              # minimal template → GFIRE_STACK_HOST_DATA/.env
+  scripts/compose-stack.sh         # stacks: minimal | console
+  scripts/extract-gfireui-migrations.sh
   docker-compose/minimal/
+  docker-compose/console/          # 3 peers + BFF + SPA
   standalone/
-  kubernetes/                    # helm planned
+  kubernetes/                        # helm planned
 docs/superpowers/specs/
-# NOT in git: ${GFIRE_HOST_DATA}/.env, postgres/, redis/, valkey/, secrets
+# NOT in git: ${GFIRE_STACK_HOST_DATA}/.env, postgres*/, secrets
 ```
 
 ---
@@ -111,6 +128,7 @@ docs/superpowers/specs/
 |-------|---------|
 | Root **`VERSION`** | This infra repo (tags `v…` on `main`) |
 | **`GFIRE_VERSION`** / image tag | Upstream **gfire** on GHCR |
+| **`GFIREUI_*_VERSION`** | Console image pins |
 | Helm **`Chart.yaml` `version:`** | Chart package only (when chart exists) |
 
 ---

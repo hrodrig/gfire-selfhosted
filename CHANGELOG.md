@@ -7,13 +7,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Compose console** (`GSH-030`): `run/docker-compose/console/` — three gfire peers (`gfire-1`…`gfire-3`), gfireui-backend, SPA, dual `postgres:18.4-bookworm`; `extract-gfireui-migrations.sh`.
+- Console `.env.example` with `GFIRE_STACK_*` / `GFIRE_*` / `GFIREUI_*` / `GFIREUI_BACKEND_*` prefixes and bootstrap admin (`GSH-031`).
+
 ### Changed
 
-- **Pick a path / standalone:** document preferred native order — Homebrew → `.deb`/`.rpm` → install script/tarball → containers → **build from source last** (honest note: packages land when upstream publishes them).
-- **`GFIRE_HOST_DATA` (gghstats-style):** live `.env` + Postgres bind-mount under a host directory outside the clone; `run/scripts/compose-stack.sh` requires it so `git pull` never flattens operator settings.
-- **ROADMAP bands** (`GSH-*`): pending work (migrate helper, Helm, console, packaging sync, CI) tracked in `ROADMAP.md` + `docs/superpowers/plans/2026-08-07-gfire-selfhosted-bands.md`.
-- **DISCLAIMER.md:** use at your own risk; operators responsible for their data; release of liability pointers from README / Compose / `.env.example`.
-- Document **`redis/`** / **`valkey/`** under **`GFIRE_HOST_DATA`** (same as `postgres/`); VPS security pointer to [gghstats-selfhosted `run/vps-recommended`](https://github.com/hrodrig/gghstats-selfhosted/tree/main/run/vps-recommended).
+- Canonical host data var: **`GFIRE_STACK_HOST_DATA`** (deprecated alias **`GFIRE_HOST_DATA`** for one release).
+- Minimal env: **`GFIRE_POSTGRES_*`**, **`GFIRE_REDIS_HOST_PORT`**, **`GFIRE_VALKEY_HOST_PORT`**; Postgres image **`postgres:18.4-bookworm`** (mount `/var/lib/postgresql`).
+- `make release-check` validates minimal + console `compose config`.
+- **Pick a path / standalone:** preferred native order documented; ROADMAP/`GSH-*` bands; DISCLAIMER; VPS pointer to gghstats `vps-recommended`.
 
 ## [0.1.0] - 2026-08-07
 

@@ -14,23 +14,23 @@ services:
     container_name: gfire-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-gfire}
-      POSTGRES_USER: ${POSTGRES_USER:-gfire}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in ${GFIRE_HOST_DATA}/.env}
+      POSTGRES_DB: ${GFIRE_POSTGRES_DB:-gfire}
+      POSTGRES_USER: ${GFIRE_POSTGRES_USER:-gfire}
+      POSTGRES_PASSWORD: ${GFIRE_POSTGRES_PASSWORD:?set GFIRE_POSTGRES_PASSWORD in ${GFIRE_STACK_HOST_DATA}/.env}
     ports:
-      - "${POSTGRES_HOST_PORT:-5432}:5432"
+      - "${GFIRE_POSTGRES_HOST_PORT:-5432}:5432"
     volumes:
-      # Durable DB files live under GFIRE_HOST_DATA (outside the git clone on servers).
-      - ${GFIRE_HOST_DATA:?set GFIRE_HOST_DATA in .env}/postgres:/var/lib/postgresql
+      # Durable DB files live under GFIRE_STACK_HOST_DATA (outside the git clone on servers).
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/postgres:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gfire} -d ${POSTGRES_DB:-gfire}"]
+      test: ["CMD-SHELL", "pg_isready -U ${GFIRE_POSTGRES_USER:-gfire} -d ${GFIRE_POSTGRES_DB:-gfire}"]
       interval: 3s
       timeout: 3s
       retries: 10
     logging: *default-logging
 
   gfire:
-    # Full ref overrides GFIRE_VERSION+GHCR: set GFIRE_IMAGE in ${GFIRE_HOST_DATA}/.env.
+    # Full ref overrides GFIRE_VERSION+GHCR: set GFIRE_IMAGE in ${GFIRE_STACK_HOST_DATA}/.env.
     image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
     container_name: gfire
     restart: unless-stopped
@@ -45,14 +45,15 @@ services:
       GFIRE_SERVER_HOST: "0.0.0.0"
       GFIRE_SERVER_PORT: "8080"
       GFIRE_STORAGE_BACKEND: ${GFIRE_STORAGE_BACKEND:-postgres}
-      GFIRE_STORAGE_POSTGRES_DSN: ${GFIRE_STORAGE_POSTGRES_DSN:?set GFIRE_STORAGE_POSTGRES_DSN in ${GFIRE_HOST_DATA}/.env}
+      GFIRE_STORAGE_POSTGRES_DSN: ${GFIRE_STORAGE_POSTGRES_DSN:?set GFIRE_STORAGE_POSTGRES_DSN in ${GFIRE_STACK_HOST_DATA}/.env}
       GFIRE_AUTH_ENABLED: ${GFIRE_AUTH_ENABLED:-false}
       GFIRE_AUTH_TOKEN: ${GFIRE_AUTH_TOKEN:-}
-      # Optional redis backend when using --profile redis (set in HOST_DATA .env):
-      # GFIRE_STORAGE_REDIS_ADDR: ${GFIRE_STORAGE_REDIS_ADDR:-redis:6379}
+      GFIRE_STORAGE_REDIS_ADDR: ${GFIRE_STORAGE_REDIS_ADDR:-}
+      GFIRE_STORAGE_REDIS_PASSWORD: ${GFIRE_STORAGE_REDIS_PASSWORD:-}
+      GFIRE_STORAGE_REDIS_DB: ${GFIRE_STORAGE_REDIS_DB:-0}
     # Optional: mount an app config from HOST_DATA (create the file first):
     # volumes:
-    #   - ${GFIRE_HOST_DATA}/gfire.yaml:/app/gfire.yaml:ro
+    #   - ${GFIRE_STACK_HOST_DATA}/gfire.yaml:/app/gfire.yaml:ro
     # command: ["server", "--config", "/app/gfire.yaml"]
     logging: *default-logging
 
@@ -62,9 +63,9 @@ services:
     container_name: gfire-redis
     restart: unless-stopped
     ports:
-      - "${REDIS_HOST_PORT:-6379}:6379"
+      - "${GFIRE_REDIS_HOST_PORT:-6379}:6379"
     volumes:
-      - ${GFIRE_HOST_DATA:?set GFIRE_HOST_DATA in .env}/redis:/data
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 3s
@@ -78,9 +79,9 @@ services:
     container_name: gfire-valkey
     restart: unless-stopped
     ports:
-      - "${VALKEY_HOST_PORT:-6380}:6379"
+      - "${GFIRE_VALKEY_HOST_PORT:-6380}:6379"
     volumes:
-      - ${GFIRE_HOST_DATA:?set GFIRE_HOST_DATA in .env}/valkey:/data
+      - ${GFIRE_STACK_HOST_DATA:?set GFIRE_STACK_HOST_DATA in .env}/valkey:/data
     healthcheck:
       test: ["CMD", "valkey-cli", "ping"]
       interval: 3s

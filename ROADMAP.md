@@ -57,8 +57,8 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 
 | ID | Item | Status | Notes |
 |----|------|--------|-------|
-| GSH-030 | `run/docker-compose/console/` multi-pin (`STACK_HOST_DATA` / kui-style) | ⬜ | Needs runnable gfireui + backend images |
-| GSH-031 | Bootstrap admin env documented (`GFIREUI_BACKEND_BOOTSTRAP_*`) | ⬜ | Platform design locked |
+| GSH-030 | `run/docker-compose/console/` multi-pin (`GFIRE_STACK_HOST_DATA`, 3 peers) | ✅ manifests | Dogfood blocked until gfireui* GHCR tags; overrides via `*_IMAGE` |
+| GSH-031 | Bootstrap admin env documented (`GFIREUI_BACKEND_BOOTSTRAP_*`) | ✅ | In `console/.env.example` + compose |
 | GSH-032 | Helm values / subchart overlay for console | ⬜ | After GSH-020 |
 
 🔒 Blocked until gfireui* publish GHCR/release tags suitable for ops.
