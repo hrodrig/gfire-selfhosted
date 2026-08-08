@@ -69,14 +69,14 @@ Console GHCR pins available (`gfireui` / `gfireui-backend`). Engine nested `GFIR
 
 ## Band 4 — Native packaging sync
 
-Fill real install examples when **gfire** product ships artifacts (this repo does not build packages).
+Fill real install examples when **gfire** product ships artifacts (**this repo does not build packages**). Upstream work: **[gfire Band 10](https://github.com/hrodrig/gfire/blob/develop/ROADMAP.md)** (`PKG-001`–`004` — GoReleaser nfpms + `contrib/systemd`).
 
-| ID | Item | Status |
-|----|------|--------|
-| GSH-040 | Homebrew formula path verified + macos standalone docs updated | 🔒 / ⬜ |
-| GSH-041 | `.deb` + systemd examples (asset names from Releases) | 🔒 / ⬜ |
-| GSH-042 | `.rpm` + systemd examples | 🔒 / ⬜ |
-| GSH-043 | Align install.sh / get-host docs with current get.gfire.* host | ⬜ |
+| ID | Item | Status | Blocked on |
+|----|------|--------|------------|
+| GSH-040 | Homebrew formula path verified + macos standalone docs updated | 🔒 / ⬜ | gfire `PKG-004` |
+| GSH-041 | `.deb` + systemd examples (asset names from Releases) | 🔒 / ⬜ | gfire `PKG-001`–`003` |
+| GSH-042 | `.rpm` + systemd examples | 🔒 / ⬜ | gfire `PKG-001`–`003` |
+| GSH-043 | Align install.sh / get-host docs with current get.gfire.* host | ⬜ | — |
 
 ---
 

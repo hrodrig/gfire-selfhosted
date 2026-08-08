@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- ROADMAP Band 4: packaging items explicitly blocked on gfire Band 10 (`PKG-001`–`004`).
+
 ## [0.1.1] - 2026-08-08
 
 ### Added
