@@ -5,7 +5,7 @@
 [![App image on GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfire-2496ED?logo=github)](https://github.com/hrodrig/gfire/pkgs/container/gfire)
 [![gfire app](https://img.shields.io/badge/app-hrodrig%2Fgfire-181717?logo=github)](https://github.com/hrodrig/gfire)
 
-Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compose, `docker run`, standalone runbooks, and (planned) Helm. **This repository is the home for all deployment-related work.** **[hrodrig/gfire](https://github.com/hrodrig/gfire)** is the **application** source, binaries, and container image only.
+Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compose, `docker run`, standalone runbooks, and **Helm**. **This repository owns deployment and infra** (charts, Compose, runbooks). App source lives in **[gfire](https://github.com/hrodrig/gfire)** / **[gfireui](https://github.com/hrodrig/gfireui)** / **[gfireui-backend](https://github.com/hrodrig/gfireui-backend)**.
 
 **Console companions** (separate repos): [gfireui](https://github.com/hrodrig/gfireui) · [gfireui-backend](https://github.com/hrodrig/gfireui-backend)
 
@@ -29,7 +29,7 @@ Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compo
 | **Single container** (`docker run`) | [Docker single container](#docker-single-container) |
 | **Compose** (engine + Postgres) | [Docker Compose minimal](#docker-compose-minimal) |
 | **Compose console** (3 peers + UI + BFF) | [Docker Compose console](#docker-compose-console) |
-| **Kubernetes** | [Kubernetes Helm](#kubernetes-helm) _(planned)_ |
+| **Kubernetes** | [Kubernetes Helm](#kubernetes-helm) |
 | **Build from source** | [Last resort](run/standalone/linux/README.md#from-source-last-resort) |
 
 **Config outside the clone (gghstats-style):** copy the stack template → **`${GFIRE_STACK_HOST_DATA}/.env`**, keep durable data under that directory, prefer **[`run/scripts/compose-stack.sh`](run/scripts/compose-stack.sh)**. Deprecated alias: **`GFIRE_HOST_DATA`** (one release). `git pull` must not flatten secrets or DB files.
@@ -101,7 +101,20 @@ Requires published (or locally overridden) **gfireui** / **gfireui-backend** ima
 
 ## Kubernetes Helm
 
-**Planned.** Chart will live at `run/kubernetes/helm/gfire/`. See the [design doc](./docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md).
+Chart: [`run/kubernetes/helm/gfire/`](./run/kubernetes/helm/gfire/) — engine peers, external Postgres DSN Secret, ClusterIP Service.
+
+```bash
+kubectl create secret generic gfire-postgres \
+  --from-literal=dsn='postgres://gfire:gfire@postgres:5432/gfire?sslmode=disable'
+
+helm upgrade --install gfire ./run/kubernetes/helm/gfire \
+  --set postgres.existingSecret=gfire-postgres \
+  --set image.tag=v1.0.2
+```
+
+Edge routing: Host-based Ingress (or PathPrefix + rewrite). Apps keep root paths — no `BASE_PATH` (design §8). Chart index publishes to GitHub Pages via chart-releaser on tags `v*`.
+
+Console Helm overlay: later (`GSH-032`).
 
 ---
 
@@ -115,7 +128,8 @@ run/
   docker-compose/minimal/
   docker-compose/console/          # 3 peers + BFF + SPA
   standalone/
-  kubernetes/                        # helm planned
+  kubernetes/helm/gfire/             # engine chart
+  kubernetes/manifests/               # prefer helm template
 docs/superpowers/specs/
 # NOT in git: ${GFIRE_STACK_HOST_DATA}/.env, postgres*/, secrets
 ```
@@ -129,7 +143,7 @@ docs/superpowers/specs/
 | Root **`VERSION`** | This infra repo (tags `v…` on `main`) |
 | **`GFIRE_VERSION`** / image tag | Upstream **gfire** on GHCR |
 | **`GFIREUI_*_VERSION`** | Console image pins |
-| Helm **`Chart.yaml` `version:`** | Chart package only (when chart exists) |
+| Helm **`Chart.yaml` `version:`** | Chart package (`0.1.0` today) |
 
 ---
 

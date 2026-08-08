@@ -1,7 +1,13 @@
 # Kubernetes manifests
 
-Raw manifests are **not** the primary path yet.
+Raw YAML is **not** the primary path.
 
-Use the Helm chart under [`../helm/gfire/`](../helm/gfire/) when it lands (same pattern as [pgwd-selfhosted](https://github.com/hrodrig/pgwd-selfhosted): prefer `helm template` over hand-maintained YAML).
+Prefer the Helm chart:
 
-Until then, Compose minimal is the supported cluster-adjacent lab path.
+```bash
+helm template gfire ../helm/gfire \
+  --set postgres.existingSecret=gfire-postgres \
+  > example-rendered.yaml
+```
+
+Review before `kubectl apply`. Values in [`../helm/gfire/values.yaml`](../helm/gfire/values.yaml) are the source of truth.

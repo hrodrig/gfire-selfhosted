@@ -1,0 +1,71 @@
+nameOverride: ""
+fullnameOverride: ""
+
+# Peer replicas share storage; each pod needs a distinct server_id (FIELD_REF hostname).
+replicaCount: 2
+
+image:
+  repository: ghcr.io/hrodrig/gfire
+  tag: "v1.0.2"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+# Engine env (GFIRE_*). Postgres is external by default — provide DSN via Secret.
+env:
+  host: "0.0.0.0"
+  port: "8080"
+  storageBackend: "postgres"
+  # Optional: leave empty and set via existingSecret key GFIRE_AUTH_TOKEN
+  authEnabled: "false"
+  workers: "4"
+  logLevel: "info"
+
+postgres:
+  # Required when storageBackend=postgres unless injected elsewhere.
+  # Prefer existingSecret with key dsn (or set value for lab only — not for prod git).
+  existingSecret: ""
+  secretName: gfire-postgres
+  secretKey: dsn
+  # Lab/dev only. Prefer existingSecret in real clusters.
+  dsn: ""
+
+auth:
+  existingSecret: ""
+  secretName: gfire-auth
+  secretKey: token
+  # Lab/dev only when authEnabled=true.
+  token: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+imagePullSecrets: []
+
+# distroless static-debian13:nonroot → uid/gid 65532
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

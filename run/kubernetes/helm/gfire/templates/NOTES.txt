@@ -1,0 +1,24 @@
+GFire engine chart deployed (headless job service).
+
+Release: {{ .Release.Name }}  Namespace: {{ .Release.Namespace }}
+
+Routing model: ClusterIP by default. Prefer Host-based Ingress for public edges;
+do not rely on app-level BASE_PATH (see design §8).
+
+1. Pods:
+   kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "gfire.name" . }},app.kubernetes.io/instance={{ .Release.Name }}
+
+2. Port-forward (lab):
+   kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "gfire.fullname" . }} 8080:{{ .Values.service.port }}
+   curl -sS http://127.0.0.1:8080/healthz
+
+3. Postgres: apply gfire migrations for the pinned image tag before traffic.
+   Secret: {{ include "gfire.postgresSecretName" . }} (key {{ .Values.postgres.secretKey }})
+
+4. Auth: GFIRE_AUTH_ENABLED={{ .Values.env.authEnabled }}
+{{- if eq .Values.env.authEnabled "true" }}
+   Token Secret: {{ include "gfire.authSecretName" . }} (key {{ .Values.auth.secretKey }})
+{{- end }}
+
+App: https://github.com/hrodrig/gfire
+Deploy: https://github.com/hrodrig/gfire-selfhosted

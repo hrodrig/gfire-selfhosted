@@ -47,11 +47,11 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 
 | ID | Item | Status |
 |----|------|--------|
-| GSH-020 | Chart `run/kubernetes/helm/gfire/` (Deployment/Service/Config/Secret) | ⬜ |
-| GSH-021 | External Postgres by default; optional DB dependency later | ⬜ |
-| GSH-022 | `make release-check` → helm lint + template + kubeconform | ⬜ |
-| GSH-023 | CI workflow helm-lint (family pattern) | ⬜ |
-| GSH-024 | Chart releaser / GitHub Pages repo (when ready) | ⬜ |
+| GSH-020 | Chart `run/kubernetes/helm/gfire/` (Deployment/Service/Config/Secret) | ✅ v0.1.0 chart |
+| GSH-021 | External Postgres by default; optional DB dependency later | ✅ DSN Secret; no in-chart DB |
+| GSH-022 | `make release-check` → helm lint + template + kubeconform | ✅ |
+| GSH-023 | CI workflow helm-lint (family pattern) | ✅ |
+| GSH-024 | Chart releaser / GitHub Pages repo (when ready) | ✅ workflow; needs public repo + first `v*` tag |
 
 ---
 

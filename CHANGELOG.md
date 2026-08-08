@@ -11,12 +11,14 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 - **Compose console** (`GSH-030`): `run/docker-compose/console/` — three gfire peers (`gfire-1`…`gfire-3`), gfireui-backend, SPA, dual `postgres:18.4-bookworm`; `extract-gfireui-migrations.sh`.
 - Console `.env.example` with `GFIRE_STACK_*` / `GFIRE_*` / `GFIREUI_*` / `GFIREUI_BACKEND_*` prefixes and bootstrap admin (`GSH-031`).
+- **Helm chart** `run/kubernetes/helm/gfire/` (`GSH-020`–`024`): engine Deployment/Service, Postgres DSN Secret, optional auth Secret, peer `server_id` from pod name; `helm-lint` + `release-charts` workflows; `make release-check` includes helm lint/template/kubeconform.
+- Design §8: k8s Host/Ingress routing without app `BASE_PATH`.
 
 ### Changed
 
 - Canonical host data var: **`GFIRE_STACK_HOST_DATA`** (deprecated alias **`GFIRE_HOST_DATA`** for one release).
 - Minimal env: **`GFIRE_POSTGRES_*`**, **`GFIRE_REDIS_HOST_PORT`**, **`GFIRE_VALKEY_HOST_PORT`**; Postgres image **`postgres:18.4-bookworm`** (mount `/var/lib/postgresql`).
-- `make release-check` validates minimal + console `compose config`.
+- `make release-check` validates Helm + minimal + console `compose config`.
 - **Pick a path / standalone:** preferred native order documented; ROADMAP/`GSH-*` bands; DISCLAIMER; VPS pointer to gghstats `vps-recommended`.
 
 ## [0.1.0] - 2026-08-07

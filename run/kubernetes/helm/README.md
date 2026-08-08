@@ -1,5 +1,13 @@
 # Helm
 
-**Status:** planned (phase 2). Chart directory will be `gfire/` (chart name **`gfire`**, not `gfire-selfhosted`).
+Chart: [`gfire/`](./gfire/) — engine Deployment + Service (+ optional Secrets).
 
-See [docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md](../../../docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md).
+```bash
+helm lint run/kubernetes/helm/gfire
+helm template lab run/kubernetes/helm/gfire \
+  --set postgres.dsn='postgres://gfire:gfire@postgres:5432/gfire?sslmode=disable'
+```
+
+Routing: Host / Ingress rewrite at the edge — apps keep root paths (`/v1`, `/healthz`). See design §8.
+
+Publish: chart-releaser on repo tags `v*` (GitHub Pages `gh-pages`). Console overlay = later band.
