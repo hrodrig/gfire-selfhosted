@@ -35,9 +35,51 @@ jobs:
             echo "Creating orphan gh-pages (first Helm chart publish)..."
             git checkout --orphan gh-pages-init
             git rm -rf . 2>/dev/null || true
-            printf '%s\n' '# Helm chart index (updated by chart-releaser)' > README.md
-            git add README.md
-            git commit -m "chore: initialize gh-pages for Helm chart index"
+            # Landing matches gghstats/pgwd-selfhosted (index.html + README); chart-releaser adds index.yaml.
+            cat > README.md <<'EOF'
+# Helm chart index (gfire)
+
+This **`gh-pages`** branch is the **Helm chart repository** served at
+**https://hrodrig.github.io/gfire-selfhosted/**.
+
+See **index.html** for the browser landing. Operator docs: https://github.com/hrodrig/gfire-selfhosted
+EOF
+            cat > index.html <<'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Helm chart repo · gfire (self-hosted)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.55; color: #1a1a1a; }
+    h1 { font-size: 1.35rem; margin-top: 0; }
+    h2 { font-size: 1.1rem; margin-top: 1.5rem; }
+    a { color: #0969da; }
+    code { background: #f6f8fa; padding: 0.12em 0.35em; border-radius: 4px; font-size: 0.92em; }
+    pre { background: #f6f8fa; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
+    .muted { color: #656d76; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <h1>Helm repository · gfire</h1>
+  <p>This site hosts the Helm chart <strong>index</strong> for deploying
+    <a href="https://github.com/hrodrig/gfire">gfire</a> on Kubernetes.
+    Published from <a href="https://github.com/hrodrig/gfire-selfhosted">gfire-selfhosted</a>.</p>
+  <p>Helm clients fetch <a href="index.yaml"><code>index.yaml</code></a> — a browser is optional.</p>
+  <h2>Add the repo and install</h2>
+  <pre><code>helm repo add gfire https://hrodrig.github.io/gfire-selfhosted
+helm repo update
+helm install gfire gfire/gfire -n gfire --create-namespace -f my-values.yaml</code></pre>
+  <p class="muted"><strong>Full docs:</strong>
+    <a href="https://github.com/hrodrig/gfire-selfhosted/blob/main/README.md">gfire-selfhosted README</a>
+    · <strong>Application:</strong> <a href="https://github.com/hrodrig/gfire">hrodrig/gfire</a></p>
+</body>
+</html>
+EOF
+            touch .nojekyll
+            git add README.md index.html .nojekyll
+            git commit -m "chore: initialize gh-pages Helm landing (gghstats pattern)"
             git push origin HEAD:gh-pages
             git checkout "$TAG_SHA"
           fi
