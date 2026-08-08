@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  gfire:
+  - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2026-08-08T16:07:30.479852256Z"
+    description: Headless GFire job engine (peers coordinate via shared storage)
+    digest: f2e0b5389dd0a7d068bdaa5aeded05b636a9f7238b0a5ddd02f92d6d611e7064
+    icon: https://raw.githubusercontent.com/hrodrig/gfire-selfhosted/main/assets/gfire-selfhosted-hero.png
+    name: gfire
+    type: application
+    urls:
+    - https://github.com/hrodrig/gfire-selfhosted/releases/download/gfire-0.1.0/gfire-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-08-08T16:07:30.479855997Z"
