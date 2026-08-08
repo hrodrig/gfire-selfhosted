@@ -9,7 +9,7 @@ Design: [docs/superpowers/specs/2026-08-07-gfire-selfhosted-design.md](./docs/su
 
 ## Current focus
 
-Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + Helm (Bands 1–2).
+Public repo live. Helm engine chart v0.1.0 landed. Next: console Helm overlay (`GSH-032`), smoke (`GSH-012`), pin app images after GHCR cooks.
 
 ---
 
@@ -24,7 +24,7 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 | GSH-005 | `GFIRE_HOST_DATA` outside clone + `run/scripts/compose-stack.sh` | ✅ |
 | GSH-006 | Standalone / docker run docs (linux, macos, windows) | ✅ |
 | GSH-007 | `make release-check` (Compose `config`) | ✅ |
-| GSH-008 | First commit + GitHub remote publish | ⬜ |
+| GSH-008 | First commit + GitHub remote publish | ✅ https://github.com/hrodrig/gfire-selfhosted |
 
 ---
 
