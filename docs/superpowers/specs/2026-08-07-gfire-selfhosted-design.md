@@ -87,6 +87,20 @@ Tracked in root **[ROADMAP.md](../../../ROADMAP.md)** (`GSH-*` IDs) and [../plan
 | 4 | Native packaging sync (brew/deb/rpm when upstream ships) |
 | 5 | kind / platforms / optional Traefik·obs |
 
-## 8. Docs location
+## 8. Kubernetes exposure (routing)
+
+**Decision (2026-08-08):** end-state is everything runnable on Kubernetes. Edge routing follows **gghstats** — not app-level `BASE_PATH`.
+
+| Rule | Detail |
+|------|--------|
+| App roots | Stay fixed: gfire `/v1` + `/healthz`, BFF `/api` + `/healthz`, SPA `/` |
+| Public edge | Prefer **Host**-based Ingress (console host, API host). Engine default = **ClusterIP** (not public) |
+| Same-host split | Optional: PathPrefix + **rewrite at Ingress** (`/api` → BFF, `/` → SPA). Rewrite so pods still see root paths |
+| Collision fear | Identical paths on one Host without differentiation → Ingress problem, not a reason to add `BASE_PATH` to all binaries |
+| Out of scope | Configurable mount prefix inside gfire / gfireui / gfireui-backend |
+
+Helm Band 2 (`GSH-020+`) implements this contract.
+
+## 9. Docs location
 
 Design, plans, and ROADMAP live **in this public repo**. Strategy notes (`PLAN-oss-adoption`, commercial) stay in the private Hermès core — not here.

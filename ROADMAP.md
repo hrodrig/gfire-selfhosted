@@ -43,6 +43,8 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 
 ## Band 2 — Kubernetes Helm
 
+**Routing decision (2026-08-08):** Host-based Ingress (+ optional PathPrefix/rewrite at the edge). **No `BASE_PATH` in app binaries** (same as gghstats: app roots stay `/v1`, `/api`, SPA `/`). Engine mostly ClusterIP; expose BFF/SPA. See design §8.
+
 | ID | Item | Status |
 |----|------|--------|
 | GSH-020 | Chart `run/kubernetes/helm/gfire/` (Deployment/Service/Config/Secret) | ⬜ |
@@ -61,7 +63,7 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 | GSH-031 | Bootstrap admin env documented (`GFIREUI_BACKEND_BOOTSTRAP_*`) | ✅ | In `console/.env.example` + compose |
 | GSH-032 | Helm values / subchart overlay for console | ⬜ | After GSH-020 |
 
-Console GHCR pins available (`gfireui` / `gfireui-backend`). Engine nested env BindEnv needs gfire release after v1.0.0 (or YAML mount).
+Console GHCR pins available (`gfireui` / `gfireui-backend`). Engine nested `GFIRE_*` BindEnv: **fixed in gfire v1.0.1** (YAML mount optional, not required for Compose env-only).
 
 ---
 
