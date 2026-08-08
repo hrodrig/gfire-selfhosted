@@ -2,7 +2,7 @@
 
 # gfire-selfhosted
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](./VERSION)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue)](./VERSION)
 [![Release](https://img.shields.io/github/v/release/hrodrig/gfire-selfhosted?label=release)](https://github.com/hrodrig/gfire-selfhosted/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![App image on GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfire-2496ED?logo=github)](https://github.com/hrodrig/gfire/pkgs/container/gfire)
@@ -155,9 +155,20 @@ helm upgrade --install gfire ./run/kubernetes/helm/gfire \
   --set image.tag=v1.0.2
 ```
 
-Edge routing: Host-based Ingress (or PathPrefix + rewrite). Apps keep root paths — no `BASE_PATH` (design §8). Chart index publishes to GitHub Pages via chart-releaser on tags `v*`.
+Edge routing: Host-based Ingress (or PathPrefix + rewrite). Apps keep root paths — no `BASE_PATH` (design §8).
 
-Console Helm overlay: later (`GSH-032`).
+**Helm repo (after first chart publish):** [index.yaml](https://hrodrig.github.io/gfire-selfhosted/index.yaml) · packages on [Releases](https://github.com/hrodrig/gfire-selfhosted/releases) as `gfire-<chart-version>.tgz`.
+
+```bash
+helm repo add gfire https://hrodrig.github.io/gfire-selfhosted
+helm repo update
+helm search repo gfire -l
+helm upgrade --install gfire gfire/gfire \
+  --set postgres.existingSecret=gfire-postgres \
+  --set image.tag=v1.0.2
+```
+
+Repo Settings → Pages: source branch **`gh-pages`** (created by chart-releaser on first `v*` tag). Console Helm overlay: later (`GSH-032`).
 
 **[↑ Contents](#table-of-contents)**
 

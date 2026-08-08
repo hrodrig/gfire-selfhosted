@@ -105,6 +105,6 @@ Fill real install examples when **gfire** product ships artifacts (this repo doe
 
 | Band | Highlights | Repo VERSION |
 |------|------------|--------------|
-| — | _(none tagged yet)_ | — |
+| 0–2 | Scaffold + console Compose + engine Helm chart | 0.1.1 |
 
 Update this table when tagging `v*` on `main`.

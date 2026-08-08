@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-08
+
 ### Added
 
 - **Compose console** (`GSH-030`): `run/docker-compose/console/` — three gfire peers (`gfire-1`…`gfire-3`), gfireui-backend, SPA, dual `postgres:18.4-bookworm`; `extract-gfireui-migrations.sh`.
@@ -14,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - **Helm chart** `run/kubernetes/helm/gfire/` (`GSH-020`–`024`): engine Deployment/Service, Postgres DSN Secret, optional auth Secret, peer `server_id` from pod name; `helm-lint` + `release-charts` workflows; `make release-check` includes helm lint/template/kubeconform.
 - Design §8: k8s Host/Ingress routing without app `BASE_PATH`.
 - README hero (`assets/gfire-selfhosted-hero.png`), family nav line, Related tools, TOC + **↑ Contents** links (gghstats/kzero-selfhosted pattern).
+- First public GitHub publish + chart-releaser path (tag `v*` → GitHub Pages `index.yaml`).
 
 ### Changed
 
