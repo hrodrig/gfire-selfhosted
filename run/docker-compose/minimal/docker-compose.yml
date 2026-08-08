@@ -51,7 +51,8 @@ services:
       GFIRE_STORAGE_REDIS_ADDR: ${GFIRE_STORAGE_REDIS_ADDR:-}
       GFIRE_STORAGE_REDIS_PASSWORD: ${GFIRE_STORAGE_REDIS_PASSWORD:-}
       GFIRE_STORAGE_REDIS_DB: ${GFIRE_STORAGE_REDIS_DB:-0}
-    # Optional: mount an app config from HOST_DATA (create the file first):
+    # Optional HOST_DATA config (GSH-011). See ../gfire.example.yaml.
+    # Required for env-only postgres when using gfire v1.0.0 (nested GFIRE_* ignored).
     # volumes:
     #   - ${GFIRE_STACK_HOST_DATA}/gfire.yaml:/app/gfire.yaml:ro
     # command: ["server", "--config", "/app/gfire.yaml"]

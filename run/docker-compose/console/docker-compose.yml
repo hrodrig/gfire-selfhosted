@@ -20,6 +20,13 @@ x-gfire-env: &gfire-env
   GFIRE_STORAGE_REDIS_PASSWORD: ${GFIRE_STORAGE_REDIS_PASSWORD:-}
   GFIRE_STORAGE_REDIS_DB: ${GFIRE_STORAGE_REDIS_DB:-0}
 
+# Optional per-peer HOST_DATA config (GSH-011): copy ../gfire.example.yaml →
+# ${GFIRE_STACK_HOST_DATA}/gfire.yaml, then on each gfire-N service add:
+#   volumes:
+#     - ${GFIRE_STACK_HOST_DATA}/gfire.yaml:/app/gfire.yaml:ro
+#   command: ["server", "--config", "/app/gfire.yaml"]
+# Needed for gfire v1.0.0 (nested GFIRE_* ignored); newer BindEnv images can skip.
+
 services:
   postgres:
     image: postgres:18.4-bookworm

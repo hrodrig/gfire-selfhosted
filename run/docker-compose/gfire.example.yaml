@@ -1,0 +1,28 @@
+# Example engine config for HOST_DATA mount (GSH-011).
+# Copy to ${GFIRE_STACK_HOST_DATA}/gfire.yaml and uncomment the volume +
+# --config lines in minimal/console compose (see run/docker-compose/README.md).
+#
+# Prefer Compose GFIRE_* env when using gfire ≥ the BindEnv fix (nested env).
+# For ghcr.io/hrodrig/gfire:v1.0.0, YAML (or a rebuilt image) is required —
+# nested GFIRE_* alone was ignored and fell back to storage.backend=memory.
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 4
+
+storage:
+  backend: postgres
+  postgres:
+    dsn: "postgres://gfire:change-me@postgres:5432/gfire?sslmode=disable"
+
+auth:
+  enabled: false
+  token: ""
+
+logging:
+  level: info
+  format: text
+
+metrics:
+  enabled: true

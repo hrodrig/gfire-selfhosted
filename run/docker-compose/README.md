@@ -50,14 +50,28 @@ mkdir -p "${GFIRE_STACK_HOST_DATA}/redis"
 ./run/scripts/compose-stack.sh minimal --profile redis up -d
 ```
 
-### Schema migrations
+### Schema migrations (GSH-010)
 
-GFire **does not** auto-migrate on startup. Apply PostgreSQL migrations from the **gfire** source tree (same tag as **`GFIRE_VERSION`**):
+GFire **does not** auto-migrate on startup. After Postgres is healthy:
 
 ```bash
-export GFIRE_STORAGE_POSTGRES_DSN='postgres://gfire:CHANGE@127.0.0.1:5432/gfire?sslmode=disable'
-cd /path/to/gfire && git checkout v1.0.0 && make migrate-up
+export GFIRE_STACK_HOST_DATA=/home/gfire/gfire-data
+./run/scripts/migrate-gfire-postgres.sh
 ```
+
+The script loads `${GFIRE_STACK_HOST_DATA}/.env`, downloads SQL from the **gfire** GitHub tag matching **`GFIRE_VERSION`**, and runs **`migrate/migrate`** against a host-reachable DSN (`GFIRE_MIGRATE_DSN` or `127.0.0.1:${GFIRE_POSTGRES_HOST_PORT}`).
+
+Alternative: clone gfire at the same tag and `make migrate-up`.
+
+### Optional `gfire.yaml` mount (GSH-011)
+
+Template: [`gfire.example.yaml`](gfire.example.yaml). Copy to `${GFIRE_STACK_HOST_DATA}/gfire.yaml`, then uncomment the volume + `--config` lines on the `gfire` service in `minimal/docker-compose.yml` (same pattern on console peers).
+
+**Note:** `ghcr.io/hrodrig/gfire:v1.0.0` ignores nested `GFIRE_*` env on unmarshal (falls back to `storage.backend=memory`). Mount YAML **or** use a newer engine image that BindEnv-registers nested keys. Prefer env-only once that image is pinned.
+
+### GHCR pulls
+
+Packages `gfire`, `gfireui`, `gfireui-backend` are public on GHCR. Anonymous pull works for published multi-arch tags. Prefer **`gfireui:v0.1.1+`** (amd64+arm64); `v0.1.0` is amd64-only.
 
 ### Smoke
 

@@ -12,7 +12,7 @@ Design: [console-stack design](../../../docs/superpowers/specs/2026-08-07-gfire-
 - Images (GHCR or local overrides via `*_IMAGE`):
   - `ghcr.io/hrodrig/gfire:${GFIRE_VERSION}`
   - `ghcr.io/hrodrig/gfireui-backend:${GFIREUI_BACKEND_VERSION}`
-  - `ghcr.io/hrodrig/gfireui:${GFIREUI_VERSION}` (static SPA; container listen **8080**; host via `GFIREUI_HOST_PORT`)
+  - `ghcr.io/hrodrig/gfireui:${GFIREUI_VERSION}` (static SPA; container listen **8080**; host via `GFIREUI_HOST_PORT`; pin **v0.1.1+** for arm64)
 - Engine Postgres migrations applied (same tag as `GFIRE_VERSION`; not auto on `gfire server`)
 
 ## Bring up
@@ -26,10 +26,12 @@ cp run/docker-compose/console/.env.example "${GFIRE_STACK_HOST_DATA}/.env"
 set -a && source "${GFIRE_STACK_HOST_DATA}/.env" && set +a
 ./run/scripts/extract-gfireui-migrations.sh
 
-# Apply gfire engine migrations to GFIRE_POSTGRES_* (see minimal compose README)
-
+./run/scripts/compose-stack.sh console up -d postgres
+./run/scripts/migrate-gfire-postgres.sh
 ./run/scripts/compose-stack.sh console up -d
 ```
+
+Optional engine YAML mount: see parent [`README.md`](../README.md) (GSH-011) and [`gfire.example.yaml`](../gfire.example.yaml).
 
 Upgrade image pins: edit `*_VERSION` in `.env`, then `compose-stack.sh console pull` and `up -d` (not `restart` alone).
 

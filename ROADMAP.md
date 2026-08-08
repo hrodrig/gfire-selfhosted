@@ -32,8 +32,8 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 
 | ID | Item | Status |
 |----|------|--------|
-| GSH-010 | First-class **migrate** helper (script/one-shot) for Postgres schema at pinned `GFIRE_VERSION` | ⬜ |
-| GSH-011 | Optional mount path for `${GFIRE_HOST_DATA}/gfire.yaml` documented + compose snippet ready | ⬜ |
+| GSH-010 | First-class **migrate** helper (script/one-shot) for Postgres schema at pinned `GFIRE_VERSION` | ✅ `run/scripts/migrate-gfire-postgres.sh` |
+| GSH-011 | Optional mount path for `${GFIRE_STACK_HOST_DATA}/gfire.yaml` documented + compose snippet ready | ✅ `gfire.example.yaml` + compose comments |
 | GSH-015 | Document HOST_DATA layout for `postgres/` + `redis/` + `valkey/`; VPS hardening link → gghstats `vps-recommended` | ✅ |
 | GSH-012 | Smoke recipe: healthz + echo enqueue (Makefile or script) | ⬜ |
 | GSH-013 | Cross-links: Related tools in gfire / gfireui READMEs → this repo | ⬜ |
@@ -57,11 +57,11 @@ Band **0** scaffold in working tree (pre-first-commit). Next: migrate helper + H
 
 | ID | Item | Status | Notes |
 |----|------|--------|-------|
-| GSH-030 | `run/docker-compose/console/` multi-pin (`GFIRE_STACK_HOST_DATA`, 3 peers) | ✅ manifests | Dogfood blocked until gfireui* GHCR tags; overrides via `*_IMAGE` |
+| GSH-030 | `run/docker-compose/console/` multi-pin (`GFIRE_STACK_HOST_DATA`, 3 peers) | ✅ manifests | Prefer `GFIREUI_VERSION=v0.1.1+` (multi-arch); BFF `v0.1.0` OK |
 | GSH-031 | Bootstrap admin env documented (`GFIREUI_BACKEND_BOOTSTRAP_*`) | ✅ | In `console/.env.example` + compose |
 | GSH-032 | Helm values / subchart overlay for console | ⬜ | After GSH-020 |
 
-🔒 Blocked until gfireui* publish GHCR/release tags suitable for ops.
+Console GHCR pins available (`gfireui` / `gfireui-backend`). Engine nested env BindEnv needs gfire release after v1.0.0 (or YAML mount).
 
 ---
 
