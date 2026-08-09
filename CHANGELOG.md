@@ -11,6 +11,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 - ROADMAP Band 4: packaging items explicitly blocked on gfire Band 10 (`PKG-001`–`004`).
 
+## [0.1.2] - 2026-08-09
+
+### Changed
+
+- Default engine pin **`GFIRE_VERSION=v1.0.3`** (Compose examples, Helm `appVersion` / `image.tag`, docs). Chart package `0.1.1`.
+- Compose image default fallback `${GFIRE_VERSION:-v1.0.3}`.
+
 ## [0.1.1] - 2026-08-08
 
 ### Added

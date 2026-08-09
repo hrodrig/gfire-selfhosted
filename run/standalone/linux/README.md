@@ -28,7 +28,7 @@ Containers: [docker](../../docker/) / [Compose](../../docker-compose/).
 
 ```bash
 wget -q -O /tmp/gfire.deb \
-  https://github.com/hrodrig/gfire/releases/download/v1.0.0/gfire_1.0.0_linux_amd64.deb
+  https://github.com/hrodrig/gfire/releases/download/v1.0.3/gfire_1.0.3_linux_amd64.deb
 sudo dpkg -i /tmp/gfire.deb
 ```
 
@@ -44,7 +44,7 @@ Then set storage/auth (env or `/etc` config if the package ships one) and start 
 
 ```bash
 sudo rpm -Uvh \
-  https://github.com/hrodrig/gfire/releases/download/v1.0.0/gfire_1.0.0_linux_amd64.rpm
+  https://github.com/hrodrig/gfire/releases/download/v1.0.3/gfire_1.0.3_linux_amd64.rpm
 ```
 
 Same fallback as `.deb` if the asset is not on that release.
@@ -57,7 +57,7 @@ Host documented by the product site (pin with `VERSION=`):
 
 ```bash
 curl -fsSL https://get.gfire.hermesrodriguez.com/install.sh | sh
-# Pin: VERSION=v1.0.0 curl -fsSL https://get.gfire.hermesrodriguez.com/install.sh | sh
+# Pin: VERSION=v1.0.3 curl -fsSL https://get.gfire.hermesrodriguez.com/install.sh | sh
 ```
 
 Verify: `gfire version` · `curl -sS http://127.0.0.1:8080/healthz` after `gfire server` (and migrations if using Postgres).
@@ -95,7 +95,7 @@ Only if no release artifact fits your platform:
 ```bash
 git clone https://github.com/hrodrig/gfire.git
 cd gfire
-git checkout v1.0.0   # or the tag you need
+git checkout v1.0.3   # or the tag you need
 make build            # or: go build -o bin/gfire ./cmd/gfire
 ./bin/gfire server
 ```

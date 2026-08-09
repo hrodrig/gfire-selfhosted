@@ -9,7 +9,7 @@ docker run -d --name gfire \
   -e GFIRE_SERVER_HOST=0.0.0.0 \
   -e GFIRE_SERVER_PORT=8080 \
   -e GFIRE_STORAGE_BACKEND=memory \
-  ghcr.io/hrodrig/gfire:v1.0.0 \
+  ghcr.io/hrodrig/gfire:v1.0.3 \
   server
 ```
 
@@ -22,7 +22,7 @@ docker run -d --name gfire \
   -e GFIRE_SERVER_PORT=8080 \
   -e GFIRE_STORAGE_BACKEND=postgres \
   -e GFIRE_STORAGE_POSTGRES_DSN='postgres://gfire:gfire@db-host:5432/gfire?sslmode=disable' \
-  ghcr.io/hrodrig/gfire:v1.0.0 \
+  ghcr.io/hrodrig/gfire:v1.0.3 \
   server
 ```
 

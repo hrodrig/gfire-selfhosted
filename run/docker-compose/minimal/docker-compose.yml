@@ -31,7 +31,7 @@ services:
 
   gfire:
     # Full ref overrides GFIRE_VERSION+GHCR: set GFIRE_IMAGE in ${GFIRE_STACK_HOST_DATA}/.env.
-    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.3}}
     container_name: gfire
     restart: unless-stopped
     depends_on:

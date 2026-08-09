@@ -2,7 +2,7 @@
 
 # gfire-selfhosted
 
-[![Version](https://img.shields.io/badge/version-0.1.1-blue)](./VERSION)
+[![Version](https://img.shields.io/badge/version-0.1.2-blue)](./VERSION)
 [![Release](https://img.shields.io/github/v/release/hrodrig/gfire-selfhosted?label=release)](https://github.com/hrodrig/gfire-selfhosted/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![App image on GHCR](https://img.shields.io/badge/image-ghcr.io%2Fhrodrig%2Fgfire-2496ED?logo=github)](https://github.com/hrodrig/gfire/pkgs/container/gfire)
@@ -77,7 +77,7 @@ Deployment manifests for **[GFire](https://github.com/hrodrig/gfire)** — Compo
 | **`valkey/`** | `--profile valkey` |
 | **`gfire.yaml`** | Optional (if you mount app config later) |
 
-Default engine image tag in examples: **`v1.0.2`**. Set **`GFIRE_VERSION`** (and console `GFIREUI_*_VERSION`) in **`${GFIRE_STACK_HOST_DATA}/.env`**.
+Default engine image tag in examples: **`v1.0.3`**. Set **`GFIRE_VERSION`** (and console `GFIREUI_*_VERSION`) in **`${GFIRE_STACK_HOST_DATA}/.env`**.
 
 **Your own VPS:** harden the host before exposing GFire. Review family guidance at **[gghstats-selfhosted `run/vps-recommended`](https://github.com/hrodrig/gghstats-selfhosted/tree/main/run/vps-recommended)**. See also [DISCLAIMER.md](./DISCLAIMER.md).
 
@@ -152,7 +152,7 @@ kubectl create secret generic gfire-postgres \
 
 helm upgrade --install gfire ./run/kubernetes/helm/gfire \
   --set postgres.existingSecret=gfire-postgres \
-  --set image.tag=v1.0.2
+  --set image.tag=v1.0.3
 ```
 
 Edge routing: Host-based Ingress (or PathPrefix + rewrite). Apps keep root paths — no `BASE_PATH` (design §8).
@@ -165,7 +165,7 @@ helm repo update
 helm search repo gfire -l
 helm upgrade --install gfire gfire/gfire \
   --set postgres.existingSecret=gfire-postgres \
-  --set image.tag=v1.0.2
+  --set image.tag=v1.0.3
 ```
 
 Repo Settings → Pages: source branch **`gh-pages`** (created by chart-releaser on first `v*` tag). Console Helm overlay: later (`GSH-032`).

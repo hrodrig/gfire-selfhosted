@@ -14,7 +14,7 @@ Run the **gfire** binary from [gfire Releases](https://github.com/hrodrig/gfire/
 | 4 | Containers / Helm — see root [Pick a path](../../README.md#pick-a-path) |
 | 5 | **Build from source** (`git clone` + `make` / `go build`) — last resort |
 
-**Today (gfire v1.0.0):** Releases ship **archives** (`tar.gz` / `.zip`) + **GHCR** images. Homebrew / `.deb` / `.rpm` follow the product packaging roadmap — document the slots here so operators know the intended order; use archives or the install host until packages exist.
+**Today (gfire v1.0.3):** Releases ship **archives** (`tar.gz` / `.zip`) + **GHCR** images. Homebrew / `.deb` / `.rpm` follow the product packaging roadmap — document the slots here so operators know the intended order; use archives or the install host until packages exist.
 
 | OS | Guide |
 |----|--------|

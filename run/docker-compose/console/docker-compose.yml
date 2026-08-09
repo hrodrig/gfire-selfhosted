@@ -48,7 +48,7 @@ services:
     logging: *default-logging
 
   gfire-1:
-    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.3}}
     container_name: gfire-1
     restart: unless-stopped
     command: ["server"]
@@ -63,7 +63,7 @@ services:
     logging: *default-logging
 
   gfire-2:
-    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.3}}
     container_name: gfire-2
     restart: unless-stopped
     command: ["server"]
@@ -76,7 +76,7 @@ services:
     logging: *default-logging
 
   gfire-3:
-    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.0}}
+    image: ${GFIRE_IMAGE:-ghcr.io/hrodrig/gfire:${GFIRE_VERSION:-v1.0.3}}
     container_name: gfire-3
     restart: unless-stopped
     command: ["server"]

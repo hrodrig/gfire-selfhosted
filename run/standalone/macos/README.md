@@ -26,14 +26,14 @@ If brew is not published yet for your tag, use the tarball below.
 Same get-host script as Linux (if it supports your arch):
 
 ```bash
-VERSION=v1.0.0 curl -fsSL https://get.gfire.hermesrodriguez.com/install.sh | sh
+VERSION=v1.0.3 curl -fsSL https://get.gfire.hermesrodriguez.com/install.sh | sh
 ```
 
 ## From source (last resort)
 
 ```bash
 git clone https://github.com/hrodrig/gfire.git && cd gfire
-git checkout v1.0.0
+git checkout v1.0.3
 make build
 ./bin/gfire server
 ```
