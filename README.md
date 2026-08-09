@@ -138,6 +138,18 @@ cp run/docker-compose/console/.env.example "${GFIRE_STACK_HOST_DATA}/.env"
 
 Requires published (or locally overridden) **gfireui** / **gfireui-backend** images.
 
+### Ops console screenshots
+
+Captured from the Compose **console** stack (SPA + BFF + three gfire peers):
+
+| Login | Jobs |
+|:-----:|:----:|
+| ![GFireUI login](assets/console/01-login.png) | ![Jobs](assets/console/02-jobs.png) |
+
+| Servers | Attention |
+|:-------:|:---------:|
+| ![Servers — three peers](assets/console/03-servers.png) | ![Attention — all clear](assets/console/04-attention.png) |
+
 **[↑ Contents](#table-of-contents)**
 
 ---
@@ -188,6 +200,7 @@ run/
   kubernetes/manifests/               # prefer helm template
 docs/superpowers/specs/
 assets/gfire-selfhosted-hero.png
+assets/console/                    # SPA screenshots (login, jobs, servers, attention)
 # NOT in git: ${GFIRE_STACK_HOST_DATA}/.env, postgres*/, secrets
 ```
 

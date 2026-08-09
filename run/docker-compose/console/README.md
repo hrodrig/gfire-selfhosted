@@ -6,6 +6,8 @@ Credible proof layout: **three gfire peer nodes** (`gfire-1`…`gfire-3`) + **gf
 
 Design: [console-stack design](../../../docs/superpowers/specs/2026-08-07-gfire-selfhosted-console-stack-design.md).
 
+Screenshots (root README gallery): [`assets/console/`](../../../assets/console/) — login, jobs, servers, attention.
+
 ## Prerequisites
 
 - Docker Compose v2

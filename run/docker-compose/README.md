@@ -83,6 +83,8 @@ curl -sS "http://127.0.0.1:${GFIRE_HOST_PORT:-8080}/healthz"
 
 See **[`console/README.md`](console/README.md)** — three peers, BFF, SPA, dual Postgres.
 
+UI gallery: root README **Ops console screenshots** (`assets/console/`).
+
 ## Lab-only (not for servers)
 
 Point **`GFIRE_STACK_HOST_DATA`** at this repo’s **`data/`** directory for a disposable local stack. Do not commit `.env`.

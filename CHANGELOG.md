@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Ops console screenshots under `assets/console/` (login, jobs, servers, attention) wired into README + Compose console docs.
+
 ### Changed
 
 - ROADMAP Band 4: packaging items explicitly blocked on gfire Band 10 (`PKG-001`–`004`).
