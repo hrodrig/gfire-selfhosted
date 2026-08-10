@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Release Charts** workflow: invalid YAML from unindented heredoc in `release-charts.yml` (GitHub Actions parse failure on every push). Landing files live under `run/kubernetes/gh-pages-landing/`.
+
 ### Added
 
 - Ops console screenshots under `assets/console/` (login, jobs, servers, attention) wired into README + Compose console docs.
